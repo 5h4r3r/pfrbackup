@@ -1,0 +1,1 @@
+#include "configscrypt.au3"
