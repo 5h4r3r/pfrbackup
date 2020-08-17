@@ -15,13 +15,18 @@ Func ReadConfig()
         EndIf
         Else
             _ArrayAdd ($errors,"Отсутствует файл конфигурации")
+            Return True
             EndIf
 EndFunc
 ;Отчет об ошибках
 Func ErorrsDisplay()
-    If $errors <> 0 Then
+    If UBound($errors) <> 0 Then
         _ArrayDisplay ($errors, "ErrorsDisplay")
+        MsgBox (64,"ErrorsDisplay", "", $errors)
     Else
-    MsgBox (64,"ErrorsDisplay", "Ошибки отсутствуют")
+        ;MsgBox (64,"ErrorsDisplay", "Ошибки отсутствуют", $errors)
+        Return True
 EndIf
 EndFunc
+ReadConfig()
+ErorrsDisplay()
