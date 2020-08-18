@@ -38,7 +38,6 @@ TrayCreateItem("")
 $aboutitem = TrayCreateItem("О программе")
 TrayCreateItem("")
 $exititem = TrayCreateItem("Exit")
-
 TrayItemSetOnEvent($aboutitem, "About")
 TrayItemSetOnEvent($exititem, "Exit1")
 
@@ -60,3 +59,8 @@ EndFunc
 Func Exit1()
     Exit
 EndFunc   ;==>Exit1
+
+;Func AddSchTasks()
+ ;   Run(@ComSpec & " /c " & "SchTasks /Create /SC ONCE /TN BACKUP /TR \test.exe  /ST 17:00")
+    ;Run(@ComSpec & " /c " & "SchTasks /Create /SC ONCE /TN MyTask /TR" & @ScriptDir & "\test.exe  /ST 16:50")
+  ;  EndFunc
