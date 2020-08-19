@@ -3,6 +3,7 @@
 Global Const $config = @ScriptDir & '\conf.ini'
 Global Const $mConfState = IniRead($config, "MAIN", "CONF_STATE", "")
 Global Const $backupDay = IniRead($config, "MAIN", "BACKUP_DAY", "")
+Global Const $backupHous = IniRead($config, "MAIN", "BACKUP_HOUS", "")
 Global Const $CheckBackupTime = IniRead($config, "MAIN", "CHECK_BACKUP_TIME", "")
 Global Const $pFileDir = IniRead($config, "PATH", "FILE_DIR", "")
 Global Const $pBackupDir = IniRead($config, "PATH", "BACKUP_DIR", "")
