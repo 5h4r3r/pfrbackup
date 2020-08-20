@@ -1,45 +1,69 @@
-;;;
-;;; Рекурсивная функция удаления файлов c заданым расширением и старше N дней от текущей даты
-;;;
-; Вывод текста в дебаг консоль
-#include <Array.au3>
-#include <File.au3>
-#include <Date.au3>
-Func _dbg($sMsg)
-    If @Compiled Then
-        DllCall("kernel32.dll", "none", "OutputDebugString", "str", $sMsg)
-    Else
-        ConsoleWrite($sMsg & @CRLF)
-    EndIf
-EndFunc
-
- $source = "D:\Test"
-Func _Delete($source)
- 
-    $aFolders = _FileListToArray($source, '*', 2) ; массив папок
-     $aFiles = _FileListToArray($source, '*', 1) ; массив файлов
-     ;_dbg($aFolders[0])
-    If Not IsArray($aFolders) AND Not IsArray($aFiles) Then Return ''; Папки и файлы не найдены
-     ;
-     ; цикл по файлам текущей папки...
-     ;
-    _dbg("Dir ==>" & $source & '\' ) ; вывод текущей папки
-     If IsArray($aFiles) Then
-     For $j = 1 to $aFiles[0]
-     ; если расширения файла совпадает и даты попадают в заданный диапазон дней
-        _dbg("File del! =>" & $source & '\' & $aFiles[$j]) ; вывод файла
-        ; УДАЛЕНИЕ ФАЙЛА!!!
-        FileDelete($source & '\' & $aFiles[$j])
-     Next
-     EndIf
-     ;
-     ; рекурсия по подкаталогам...
-     ;
-     If IsArray($aFolders) Then
-     For $i = 1 to $aFolders[0]
-     $new_source = $source & '\' & $aFolders[$i] ; выбираем очередной подкаталог из массива
-     _Delete($new_source) ; и выполняем рекурсивный вызов для подкаталогов
-     Next
-     EndIf
+#include "var.au3"
+#include "FuncBU.au3"
+; Вызов проверок
+_ReadConfig()
+_DirCheck()
+_ErorrsDisplay()
+_dbg($cleanDir)
+;
+; Настройка трея
+;
+    TraySetIcon('shell32.dll', 7)
+    TrayTip($progname, "Бекап запущен", 2, 1)
+    Opt("TrayOnEventMode", 1)
+    Opt("GUIOnEventMode", 1)
+    Opt("SendCapslockMode", 0)
+    Opt("TrayMenuMode", 1 + 2)
+    $trayCreateBackup = TrayCreateItem("Создать бекап")
+    TrayItemSetOnEvent($trayCreateBackup, "_CreateBackup")
+    TrayCreateItem("")
+    $trayCleanDir = TrayCreateItem("Удалить файлы в директории!")
+    TrayItemSetOnEvent($trayCleanDir, "_TrayDelete")
+    TrayCreateItem("")
+    $aboutitem = TrayCreateItem("О программе")
+    TrayCreateItem("")
+    $exititem = TrayCreateItem("Exit")
+    TrayItemSetOnEvent($aboutitem, "About")
+    TrayItemSetOnEvent($exititem, "Exit1")
+    $gt = @HOUR
+_dbg($backupHour & $gt)
+;
+; ###Архивация и бекап!!! 
+;   
+    Func _CreateBackup()
+        $sDate = "" & @MDAY  & @MON  & @YEAR & "_" & @HOUR & @MIN 
+        $sTemplate7z = $sDate & "_backup.7z"
+        $sKey7z = "a -t7z "& $pBackupDir &"\"&$sTemplate7z & " -mx3 " & $pFileDir & " -ssw"
+        If FileExists($pBackupDir & "\" & $sTemplate7z) Then
+            TrayTip($progname, "Резервная копия " & $sTemplate7z & " уже существует!", 5, 1)
+            ;MsgBox (64,"Backup v0.1", "Резервная копия" & $sTemplate7z & "уже существует!")
+            sleep (10000)
+        Else
+        ShellExecuteWait( @ScriptDir & "/7zip/7z.exe", $sKey7z)
+             ; Вывод уведомления о создании бекапа
+            _dbg("Backup complete!")
+            TrayTip($progname, "Создана новая резервная копия", 5, 1)
+            sleep (10000)
+        EndIf
     EndFunc
-    _Delete($source)
+; 
+; Цикл проверяет условия создания бекапа с определенной переодичностью
+;
+    While 1
+        ; Время ожидания до запуска следующей проверки 
+        ;Sleep(_TimeConv($CheckBackupTime))
+        ;$fDate = "" & @MDAY  & @MON  & @YEAR & "_" & @HOUR & @MIN & "_*"
+        $fDate = "" & @MDAY  & @MON  & @YEAR & "_*"
+        ; Проверка условий запуска бекапа
+        ;If (@MDAY = $backupDay) And (@HOUR = $backupHour) And (FileExists($pBackupDir & "\" & $fDate) = 0) Then
+        If (@MDAY = $backupDay) And (@HOUR = $backupHour) Then
+            _CreateBackup()
+            ; Очистка директорий
+            If $cleanDir = "True" Then
+                TrayTip($progname, "Запущена очистка директорий", 5, 1)
+                sleep (10000)
+                _Delete($pFileDir)
+                _dbg("Backup dir cleaned!")
+            EndIf
+        EndIf
+     WEnd

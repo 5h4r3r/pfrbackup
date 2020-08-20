@@ -48,20 +48,48 @@ _dbg($cleanDir)
 ; 
 ; Цикл проверяет условия создания бекапа с определенной переодичностью
 ;
-    While 1
-        ; Время ожидания до запуска следующей проверки 
-        Sleep(_TimeConv($CheckBackupTime))
-        $fDate = "" & @MDAY  & @MON  & @YEAR & "_" & @HOUR & @MIN & "_*"
-        ;$fDate = "" & @MDAY  & @MON  & @YEAR & "_*"
-        ; Проверка условий запуска бекапа
-        If (@MDAY = $backupDay) And (@HOUR = $backupHour) And (FileExists($pBackupDir & "\" & $fDate) = 0) Then
-            _CreateBackup()
-            ; Очистка директорий
-            If $cleanDir = "True" Then
-                TrayTip($progname, "Запущена очистка директорий", 5, 1)
-                sleep (10000)
-                _Delete($pFileDir)
-                _dbg("Backup dir cleaned!")
-            EndIf
-        EndIf
-     WEnd
+    If $backupDay = "X" Then
+        TrayTip($progname, "Запущено в ручном режиме", 5, 1)
+        sleep (10000)
+        While 1
+            ; Пустой цикл раз в час
+            sleep (3600000)
+        WEnd
+    Else
+        ; ДОПИСАТЬ!
+        If $backupHour = "X" Then
+        Else
+            While 1 
+                $fDate = "" & @MDAY  & @MON  & @YEAR & "_*"
+                ; Проверка условий запуска бекапа
+                If (@MDAY = $backupDay) And (@HOUR = $backupHour) And (FileExists($pBackupDir & "\" & $fDate) = 0) Then
+                    _CreateBackup()
+                    ; Очистка директорий
+                    If $cleanDir = "True" Then
+                        TrayTip($progname, "Запущена очистка директорий", 5, 1)
+                        sleep (10000)
+                        _Delete($pFileDir)
+                        _dbg("Backup dir cleaned!")
+                    EndIf
+                EndIf 
+                ; Время ожидания до запуска следующей проверки
+                Sleep(3600000)
+             WEnd  
+        While 1
+            $fDate = "" & @MDAY  & @MON  & @YEAR & "_" & @HOUR & "*"
+            ;$fDate = "" & @MDAY  & @MON  & @YEAR & "_*"
+            ; Проверка условий запуска бекапа
+            If (@MDAY = $backupDay) And (@HOUR = $backupHour) And (FileExists($pBackupDir & "\" & $fDate) = 0) Then
+                _CreateBackup()
+                ; Очистка директорий
+                If $cleanDir = "True" Then
+                    TrayTip($progname, "Запущена очистка директорий", 5, 1)
+                    sleep (10000)
+                    _Delete($pFileDir)
+                    _dbg("Backup dir cleaned!")
+                EndIf
+            EndIf 
+            ; Время ожидания до запуска следующей проверки 
+            Sleep(_TimeConv($CheckBackupTime))
+         WEnd
+    EndIf
