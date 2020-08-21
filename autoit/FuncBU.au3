@@ -75,8 +75,10 @@ EndFunc
 ; Функция рекурсивной очистки каталогов
 ;
 Func _Delete($source)
+    TrayTip($progname, "Запущена очистка директорий", 5, 1)
+    sleep (10000)
     $aFolders = _FileListToArray($source, '*', 2) ; массив папок
-     $aFiles = _FileListToArray($source, '*', 1) ; массив файлов
+    $aFiles = _FileListToArray($source, '*', 1) ; массив файлов
     If Not IsArray($aFolders) AND Not IsArray($aFiles) Then Return ''; Папки и файлы не найдены
      ;
      ; цикл по файлам текущей папки...
@@ -97,4 +99,5 @@ Func _Delete($source)
         _Delete($new_source) ; и выполняем рекурсивный вызов для подкаталогов
      Next
      EndIf
+     _dbg("Backup dir cleaned!")
     EndFunc
