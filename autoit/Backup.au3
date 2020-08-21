@@ -4,7 +4,6 @@
 _ReadConfig()
 _DirCheck()
 _ErorrsDisplay()
-_dbg($cleanDir)
 ;
 ; Настройка трея
 ;
@@ -16,50 +15,35 @@ _dbg($cleanDir)
     $trayCreateBackup = TrayCreateItem("Создать бекап")
     TrayItemSetOnEvent($trayCreateBackup, "_CreateBackup")
     TrayCreateItem("")
-    $trayCleanDir = TrayCreateItem("Удалить файлы в директории!")
-    TrayItemSetOnEvent($trayCleanDir, "_TrayDelete")
+    $trayClean = TrayCreateMenu("Очистка")
+    $trayCleanDir1 = TrayCreateItem("Удалить файлы в исходной директории", $trayClean)
+    $trayCleanDir2 = TrayCreateItem("Удалить файлы в конечной директории", $trayClean)
+    TrayItemSetOnEvent($trayCleanDir1, "_TrayDelete1")
+    TrayItemSetOnEvent($trayCleanDir2, "_TrayDelete2")
     TrayCreateItem("")
     $aboutitem = TrayCreateItem("О программе")
-    TrayCreateItem("")
-    $exititem = TrayCreateItem("Exit")
     TrayItemSetOnEvent($aboutitem, "About")
+    TrayCreateItem("")
+    $exititem = TrayCreateItem("Выход")
     TrayItemSetOnEvent($exititem, "Exit1")
-    ; сообщение при запуске
-    TrayTip($progname, "Бекап запущен!" & @CRLF _
-     & "Текущая конфигурация: " & "День: " & $backupDay & " Час: " & $backupHour , 2, 1)
-    sleep (20000)
-;
-; ###Архивация и бекап!!! 
-;    
-    Func _CreateBackup()
-        $sDate = "" & @MDAY  & @MON  & @YEAR & "_" & @HOUR & @MIN 
-        $sTemplate7z = $sDate & "_backup.7z"
-        $sKey7z = "a -t7z "& $pBackupDir &"\"&$sTemplate7z & " -mx3 " & $pFileDir & " -ssw"
-        If FileExists($pBackupDir & "\" & $sTemplate7z) Then
-            TrayTip($progname, "Резервная копия " & $sTemplate7z & " уже существует!", 5, 1)
-            ;MsgBox (64,"Backup v0.1", "Резервная копия" & $sTemplate7z & "уже существует!")
-            sleep (10000)
-        Else
-        ShellExecuteWait( @ScriptDir & "/7zip/7z.exe", $sKey7z)
-             ; Вывод уведомления о создании бекапа
-            _dbg("Backup complete!")
-            TrayTip($progname, "Создана новая резервная копия", 5, 1)
-            sleep (10000)
-        EndIf
-    EndFunc
 ; 
 ; Цикл проверяет условия создания бекапа с определенной переодичностью
 ;
     If $backupDay = "X" Then
-        TrayTip($progname, "Запущено в ручном режиме!", 5, 1)
-        sleep (10000)
+        ; Cообщение при запуске
+        TrayTip($progname, "Бекап запущен!" & @CRLF _
+             & "Текущая конфигурация: " & "Запуск в ручном режиме", 2, 1)
+            sleep (10000)
         While 1
             ; Пустой цикл раз в час
             sleep (3600000)
         WEnd
     Else
-        ; ДОПИСАТЬ!
         If $backupHour = "X" Then
+            ; Cообщение при запуске
+            TrayTip($progname, "Бекап запущен!" & @CRLF _
+             & "Текущая конфигурация: " & "Запуск " & $backupDay & " числа каждого месяца", 2, 1)
+            sleep (10000)
             While 1 
                 $fDate = "" & @MDAY  & @MON  & @YEAR & "_*"
                 ; Проверка условий запуска бекапа
@@ -74,6 +58,10 @@ _dbg($cleanDir)
                 Sleep(3600000)
              WEnd  
             Else
+            ; Cообщение при запуске
+            TrayTip($progname, "Бекап запущен!" & @CRLF _
+            & "Текущая конфигурация: " & "Запуск " & $backupDay & " числа каждого месяца в "& $backupHour & " час", 2, 1)
+            sleep (10000)
         While 1
             $fDate = "" & @MDAY  & @MON  & @YEAR & "_" & @HOUR & "*"
             ; Проверка условий запуска бекапа

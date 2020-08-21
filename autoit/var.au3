@@ -7,7 +7,12 @@ Global Const $CheckBackupTime = IniRead($config, "MAIN", "CHECK_BACKUP_TIME", ""
 Global Const $cleanDir = IniRead($config, "MAIN", "CLEAN_DIR", "")
 Global Const $pFileDir = IniRead($config, "PATH", "FILE_DIR", "")
 Global Const $pBackupDir = IniRead($config, "PATH", "BACKUP_DIR", "")
-Global $version = " v0.2"
+Global Const $z7Key = IniRead($config, "7Z", "7Z_KEY", "")
+Global Const $z7BDKey = IniRead($config, "7Z", "BACKUP_DIR_KEY", "")
+Global Const $z7FDKey = IniRead($config, "7Z", "FILE_DIR_KEY", "")
+
+Global $default7zKey = 0
+Global $version = "alpha v0.4"
 Global $progname = "Backup"
 ; Массив содержащий сообщения об ошибках
 Global $errors[0]
