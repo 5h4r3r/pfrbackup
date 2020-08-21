@@ -5,8 +5,8 @@
 #AutoIt3Wrapper_Res_CompanyName=DDC
 #AutoIt3Wrapper_Res_Language=1049
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-#include "var.au3"
-#include "FuncBU.au3"
+#include "varlib.au3"
+#include "funclib.au3"
 _Main()
 
 Func _Main()
