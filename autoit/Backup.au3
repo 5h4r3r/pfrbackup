@@ -1,34 +1,22 @@
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_Res_Fileversion=0.4.0.0
+#AutoIt3Wrapper_Res_ProductName=Backup alpha v0.4
+#AutoIt3Wrapper_Res_ProductVersion=0.4
+#AutoIt3Wrapper_Res_CompanyName=DDC
+#AutoIt3Wrapper_Res_Language=1049
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include "var.au3"
 #include "FuncBU.au3"
-; Вызов проверок
-_ReadConfig()
-_DirCheck()
-_ErorrsDisplay()
-;
-; Настройка трея
-;
-    TraySetIcon('shell32.dll', 7)
-    Opt("TrayOnEventMode", 1)
-    Opt("GUIOnEventMode", 1)
-    Opt("SendCapslockMode", 0)
-    Opt("TrayMenuMode", 1 + 2)
-    $trayCreateBackup = TrayCreateItem("Создать бекап")
-    TrayItemSetOnEvent($trayCreateBackup, "_CreateBackup")
-    TrayCreateItem("")
-    $trayClean = TrayCreateMenu("Очистка")
-    $trayCleanDir1 = TrayCreateItem("Удалить файлы в исходной директории", $trayClean)
-    $trayCleanDir2 = TrayCreateItem("Удалить файлы в конечной директории", $trayClean)
-    TrayItemSetOnEvent($trayCleanDir1, "_TrayDelete1")
-    TrayItemSetOnEvent($trayCleanDir2, "_TrayDelete2")
-    TrayCreateItem("")
-    $aboutitem = TrayCreateItem("О программе")
-    TrayItemSetOnEvent($aboutitem, "About")
-    TrayCreateItem("")
-    $exititem = TrayCreateItem("Выход")
-    TrayItemSetOnEvent($exititem, "Exit1")
-; 
+_Main()
+
+Func _Main()
+
+; Вызов проверки
+    If _ErorrsCheck() = False Then Exit
+; Отрисовка трея   
+    _TrayConfig()
+
 ; Цикл проверяет условия создания бекапа с определенной переодичностью
-;
     If $backupDay = "X" Then
         ; Cообщение при запуске
         TrayTip($progname, "Бекап запущен!" & @CRLF _
@@ -36,7 +24,7 @@ _ErorrsDisplay()
             sleep (10000)
         While 1
             ; Пустой цикл раз в час
-            sleep (3600000)
+            sleep(_TimeConv(60))
         WEnd
     Else
         If $backupHour = "X" Then
@@ -55,7 +43,7 @@ _ErorrsDisplay()
                     EndIf
                 EndIf 
                 ; Время ожидания до запуска следующей проверки
-                Sleep(3600000)
+                Sleep(_TimeConv(60))
              WEnd  
             Else
             ; Cообщение при запуске
@@ -73,7 +61,8 @@ _ErorrsDisplay()
                 EndIf
             EndIf 
             ; Время ожидания до запуска следующей проверки 
-            Sleep(_TimeConv($CheckBackupTime))
+            sleep(_TimeConv($CheckBackupTime))
          WEnd
          EndIf
     EndIf
+    EndFunc
