@@ -17,7 +17,7 @@ Func _dbg($sMsg)
 Func _ReadConfig()
     ; Проверка наличия конфига
     If FileExists($config) Then
-        If ($backupDay <> False) And ($CheckBackupTime <> False) And ($backupHour <> False) Then
+        If $backupDay And $CheckBackupTime And $backupHour And $cleanDir Then
             ; Если значение не TRUE Записываем
             If $mConfState <> "True" Then
                 IniWrite ($config, "MAIN", "CONF_STATE", "True")

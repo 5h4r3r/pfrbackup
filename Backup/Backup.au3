@@ -17,7 +17,7 @@ Func _Main()
     _TrayConfig()
 
 ; Цикл проверяет условия создания бекапа с определенной переодичностью
-    If $backupDay = "X" Then
+    If $backupDay = "X" And $backupHour = "X" Then
         ; Cообщение при запуске
         TrayTip($progname, "Бекап запущен!" & @CRLF _
              & "Текущая конфигурация: " & "Запуск в ручном режиме", 2, 1)
