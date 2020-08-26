@@ -84,6 +84,7 @@ Func _Main()
     EndIf
     EndFunc
     ;
+    ;
     ;If $backupDay = "X" Then
         ;If $backupHour = "X" Then
             ; Запуск в ручном
@@ -94,4 +95,5 @@ Func _Main()
             ; Запуск в определенный день в любой час
         ;Else    
             ; Запуск в определенный день в определенный час
-        ;EndIf        
+        ;EndIf    
+    ; change branch    
