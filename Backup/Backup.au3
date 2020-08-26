@@ -83,7 +83,7 @@ Func _Main()
          EndIf
     EndIf
     EndFunc
-
+    ;
     ;If $backupDay = "X" Then
         ;If $backupHour = "X" Then
             ; Запуск в ручном
