@@ -104,8 +104,6 @@ EndFunc
 ;Функция рекурсивной очистки каталогов
 ;
 Func _Delete($source)
-    TrayTip($progname, "Запущена очистка директорий", 5, 1)
-    sleep (10000)
     $aFolders = _FileListToArray($source, '*', 2) ; массив папок
     $aFiles = _FileListToArray($source, '*', 1) ; массив файлов
     If Not IsArray($aFolders) AND Not IsArray($aFiles) Then Return ''; Папки и файлы не найдены
@@ -128,11 +126,11 @@ Func _Delete($source)
             _Delete($new_source) ; и выполняем рекурсивный вызов для подкаталогов
         Next
      EndIf
-     _dbg("Backup dir cleaned!")
+     ;_dbg("Backup dir cleaned!")
     EndFunc
 
 Func _TrayConfig()
-        ;
+;
 ; Настройка трея
 ;
     TraySetIcon('shell32.dll', 7)
@@ -145,9 +143,9 @@ Func _TrayConfig()
     TrayCreateItem("")
     $trayClean = TrayCreateMenu("Очистка")
     $trayCleanDir1 = TrayCreateItem("Удалить файлы в исходной директории", $trayClean)
-    $trayCleanDir2 = TrayCreateItem("Удалить файлы в конечной директории", $trayClean)
+    ;$trayCleanDir2 = TrayCreateItem("Удалить файлы в конечной директории", $trayClean)
     TrayItemSetOnEvent($trayCleanDir1, "_TrayDelete1")
-    TrayItemSetOnEvent($trayCleanDir2, "_TrayDelete2")
+    ;TrayItemSetOnEvent($trayCleanDir2, "_TrayDelete2")
     TrayCreateItem("")
     $aboutitem = TrayCreateItem("О программе")
     TrayItemSetOnEvent($aboutitem, "About")
@@ -155,16 +153,25 @@ Func _TrayConfig()
     $exititem = TrayCreateItem("Выход")
     TrayItemSetOnEvent($exititem, "Exit1")
     EndFunc
-;
+
+ Func _CleanDir()
+     If $cleanDir = "True" Then
+        TrayTip($progname, "Запущена очистка директорий", 5, 1)
+        sleep (10000)
+         _Delete($pFileDir)
+         _dbg("Backup dir cleaned!")
+    EndIf
+    EndFunc
+;   
 ; Функции пунктов меню трея 
 ; 
 Func _TrayDelete1()
     $Info = MsgBox(4 + 32, "Очистка", "Вы уверены что хотите удалить все файлы в директории? " & $pFileDir)
-        If $info = 6 Then _Delete($pFileDir)
-    EndFunc
-Func _TrayDelete2()
-    $Info = MsgBox(4 + 32, "Очистка", "Вы уверены что хотите удалить все файлы в директории? " & $pBackupDir)
-        If $info = 6 Then _Delete($pBackupDir)
+        If $info = 6 Then
+            TrayTip($progname, "Запущена очистка директорий", 5, 1)
+            sleep (10000)
+            _Delete($pFileDir)
+            EndIf
     EndFunc
 Func About()
         Msgbox(64,"О программе",$progname &" "& $version)
